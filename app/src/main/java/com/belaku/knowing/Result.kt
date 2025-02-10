@@ -1,0 +1,31 @@
+package com.belaku.knowing
+
+data class Result(
+    val binding_values: List<BindingValue>,
+    val bookmark_count: Int,
+    val community_note: Any,
+    val conversation_id: String,
+    val creation_date: String,
+    val expanded_url: String,
+    val extended_entities: ExtendedEntities,
+    val favorite_count: Int,
+    val in_reply_to_status_id: Any,
+    val language: String,
+    val media_url: List<String>,
+    val quote_count: Int,
+    val quoted_status: Any,
+    val quoted_status_id: Any,
+    val reply_count: Int,
+    val retweet: Boolean,
+    val retweet_count: Int,
+    val retweet_status: RetweetStatus,
+    val retweet_tweet_id: String,
+    val source: Any,
+    val text: String,
+    val timestamp: Int,
+    val tweet_id: String,
+    val user: UserX,
+    val video_url: Any,
+    val video_view_count: Any,
+    val views: Int
+)
