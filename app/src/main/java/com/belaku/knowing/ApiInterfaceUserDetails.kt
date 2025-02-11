@@ -15,10 +15,10 @@ import retrofit2.http.Query
 
         val response = client.newCall(request).execute()
     }*/
-interface ApiInterface {
+interface ApiInterfaceUserDetails {
 
     @Headers("x-rapidapi-key: 9e92cc4f67msh8bb4ede93f53bf7p1ecb22jsn26ea5014a6df",
         "x-rapidapi-host: twitter154.p.rapidapi.com")
-    @GET("user/tweets")
-    fun getTweets(@Query("username") query: String) : Call<TweetsData?>
+    @GET("user/details")
+    fun getDetails(@Query("username") query: String) : Call<ProfileData?>
 }

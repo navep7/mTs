@@ -11,12 +11,14 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
 import com.belaku.knowing.databinding.ActivityMainBinding
+import com.squareup.picasso.Picasso
 import okhttp3.Response
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,6 +29,10 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var arrayAdapter: ArrayAdapter<String>
+    private lateinit var mListView: ListView
+    private lateinit var imageviewDp: ImageView
+    private lateinit var imageviewTrail: ImageView
     private var tweets: ArrayList<String> = ArrayList()
     private lateinit var response: Response
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -39,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+     //   setSupportActionBar(binding.toolbar)
 
         findViewByIds()
 
@@ -58,11 +64,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getTweets(str: String) {
+
+
+            getProfile(str)
+
         val retrofitBuilder = Retrofit.Builder()
             .baseUrl("https://twitter154.p.rapidapi.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiInterface::class.java)
+            .create(ApiInterfaceUserTweets::class.java)
 
         val retrofitData = retrofitBuilder.getTweets(str)
         
@@ -77,20 +87,20 @@ class MainActivity : AppCompatActivity() {
 
                 if (tweetsList != null) {
 
+                    tweets.clear()
+
                     for (i in tweetsList.indices)
                         tweets.add(tweetsList[i].text)
+
+                    arrayAdapter.notifyDataSetChanged()
 
                 //    makeToast(tweetsList.size.toString() + " : Tlist")
                 //    makeToast("nextToken - " + nextToken)
                     val ran = Random
                     val x = ran.nextInt(6) + 5
-                    makeToast(x.toString() + " : " + tweets.get(x).toString())
+           //         makeToast(x.toString() + " : " + tweets.get(x).toString())
 
-                    var mListView = findViewById <ListView>(R.id.tweets_listview)
-                    var arrayAdapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_list_item_1, tweets)
-                    mListView.adapter = arrayAdapter
+
 
                     mListView.getChildAt(x)?.setBackgroundColor(
                         Color.parseColor("#00743D"));
@@ -105,6 +115,39 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun getProfile(str: String) {
+
+
+        val retrofitBuilder = Retrofit.Builder()
+            .baseUrl("https://twitter154.p.rapidapi.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterfaceUserDetails::class.java)
+
+        val retrofitData = retrofitBuilder.getDetails(str)
+
+        retrofitData.enqueue(object : Callback<ProfileData?> {
+
+            override fun onResponse(
+                call: Call<ProfileData?>,
+                response: retrofit2.Response<ProfileData?>
+            ) {
+
+                var dpUrl = response.body()?.profile_pic_url
+                Picasso.get().load(dpUrl).into(imageviewDp)
+                var tpUrl = response.body()?.profile_banner_url
+                Picasso.get().load(tpUrl).into(imageviewTrail)
+                Log.d("DPurl ", dpUrl.toString())
+
+            }
+
+            override fun onFailure(call: Call<ProfileData?>, t: Throwable) {
+                makeToast("Failed - " + t.message)
+            }
+
+        })
+    }
+
     private fun makeToast(str: String) {
         Log.d("Toasting", str)
         Toast.makeText(applicationContext, str, Toast.LENGTH_LONG).show()
@@ -112,7 +155,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun findViewByIds() {
+        imageviewDp = findViewById(R.id.imgv_dp)
+        imageviewTrail = findViewById(R.id.imgv_pp)
 
+        mListView = findViewById <ListView>(R.id.tweets_listview)
+        arrayAdapter = ArrayAdapter(
+            this@MainActivity,
+            android.R.layout.simple_list_item_1, tweets)
+        mListView.adapter = arrayAdapter
+
+       /* var src = "https://pbs.twimg.com/profile_images/976382974961664001/zr1-ysp2_normal.jpg";
+        Picasso.get()
+            .load(src)
+            .into(imageviewDp);*/
         editTextUname = findViewById(R.id.edtx_uname)
     }
 
