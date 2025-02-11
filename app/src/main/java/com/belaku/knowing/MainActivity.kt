@@ -1,6 +1,8 @@
 package com.belaku.knowing
 
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -15,7 +17,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
 import com.belaku.knowing.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.Snackbar
 import okhttp3.Response
 import retrofit2.Call
 import retrofit2.Callback
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         findViewByIds()
+
+        getTweets(editTextUname.text.toString())
 
         editTextUname.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             var handled = false
@@ -129,8 +132,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getTweets(view: View) {
-        getTweets(editTextUname.text.toString())
+    fun postTweet(view: View) {
+        val tweetUrl = ("https://twitter.com/intent/tweet?text=")
+        val uri = Uri.parse(tweetUrl)
+        startActivity(Intent(Intent.ACTION_VIEW, uri))
     }
 
 
