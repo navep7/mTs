@@ -27,7 +27,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textSize="21dp"
-        android:text="iNaveenPrakash"
+
+        android:hint="Enter Twitter Handle"
         android:inputType="text"
         android:imeOptions="actionSend"
         android:padding="@dimen/fab_margin"

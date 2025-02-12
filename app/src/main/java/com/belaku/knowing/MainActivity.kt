@@ -1,5 +1,6 @@
 package com.belaku.knowing
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -32,6 +33,7 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var pDialog: ProgressDialog
     private var isDarkModeOn: Boolean = false
     private lateinit var sharedPreferencesEditor: SharedPreferences.Editor
     private lateinit var sharedPreferences: SharedPreferences
@@ -63,7 +65,17 @@ class MainActivity : AppCompatActivity() {
 
         appContext = applicationContext
 
+
+        if (editTextUname.text.length > 0)
         getTweets(editTextUname.text.toString())
+        else {
+            var savedUser: String = sharedPreferences.getString("uname", "").toString();
+            if (savedUser != "")
+                getTweets(savedUser)
+            else {
+                makeToast("Enter Twitter Handle")
+            }
+        }
 
         editTextUname.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             var handled = false
@@ -99,10 +111,15 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.MODE_NIGHT_NO);
          //   btnToggleDark.setText("Enable Dark Mode");
         }
+
+        pDialog = ProgressDialog(this@MainActivity)
+        pDialog.setCancelable(false)
     }
 
     private fun getTweets(str: String) {
 
+        pDialog.setMessage("Loading...");
+        pDialog.show();
 
             getProfile(str)
 
@@ -120,6 +137,9 @@ class MainActivity : AppCompatActivity() {
                 call: Call<TweetsData?>,
                 response: retrofit2.Response<TweetsData?>
             ) {
+
+                makeToast("Rrrr - " + response.body())
+
                 val nextToken = response.body()?.continuation_token
                 val tweetsList = response.body()?.results?.toList()
 
@@ -143,14 +163,25 @@ class MainActivity : AppCompatActivity() {
                     rvTweets.getChildAt(x)?.setBackgroundColor(
                         Color.parseColor("#00743D"));
 
-                }
+                } else makeToast("Some problem, maybe!")
+
+                dismissProgressDialog();
+
             }
 
             override fun onFailure(call: Call<TweetsData?>, t: Throwable) {
                 makeToast("Failed - " + t.message)
+
+                dismissProgressDialog();
             }
 
         })
+    }
+
+    private fun dismissProgressDialog() {
+        if (pDialog != null && pDialog.isShowing()) {
+            pDialog.dismiss()
+        }
     }
 
     private fun getProfile(str: String) {
@@ -197,6 +228,15 @@ class MainActivity : AppCompatActivity() {
         rvTweets.adapter = tweetsRvAdapter
 
         editTextUname = findViewById(R.id.edtx_uname)
+    }
+
+    override fun onDestroy() {
+        if (editTextUname.text.length > 0) {
+            sharedPreferencesEditor.putString("uname", editTextUname.text.toString())
+            sharedPreferencesEditor.apply()
+        }
+        dismissProgressDialog()
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
