@@ -40,6 +40,8 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.appcompat.v110)
+    implementation(libs.androidx.recyclerview)
 
     implementation(libs.okhttp)
 

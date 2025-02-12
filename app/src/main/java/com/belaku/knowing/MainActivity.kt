@@ -17,6 +17,8 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.belaku.knowing.databinding.ActivityMainBinding
 import com.squareup.picasso.Picasso
 import okhttp3.Response
@@ -29,8 +31,13 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var arrayAdapter: ArrayAdapter<String>
-    private lateinit var mListView: ListView
+    private lateinit var tweetsRvAdapter: TweetsRvAdapter
+    private lateinit var rvTweets: RecyclerView
+//    private lateinit var arrayAdapter: ArrayAdapter<String>
+  //  private lateinit var mListView: ListView
+
+
+
     private lateinit var imageviewDp: ImageView
     private lateinit var imageviewTrail: ImageView
     private var tweets: ArrayList<String> = ArrayList()
@@ -92,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                     for (i in tweetsList.indices)
                         tweets.add(tweetsList[i].text)
 
-                    arrayAdapter.notifyDataSetChanged()
+                    tweetsRvAdapter.notifyDataSetChanged()
 
                 //    makeToast(tweetsList.size.toString() + " : Tlist")
                 //    makeToast("nextToken - " + nextToken)
@@ -102,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                    mListView.getChildAt(x)?.setBackgroundColor(
+                    rvTweets.getChildAt(x)?.setBackgroundColor(
                         Color.parseColor("#00743D"));
 
                 }
@@ -158,11 +165,17 @@ class MainActivity : AppCompatActivity() {
         imageviewDp = findViewById(R.id.imgv_dp)
         imageviewTrail = findViewById(R.id.imgv_pp)
 
-        mListView = findViewById <ListView>(R.id.tweets_listview)
+       /* mListView = findViewById <ListView>(R.id.tweets_listview)
         arrayAdapter = ArrayAdapter(
             this@MainActivity,
             android.R.layout.simple_list_item_1, tweets)
-        mListView.adapter = arrayAdapter
+        mListView.adapter = arrayAdapter*/
+
+        rvTweets = findViewById(R.id.rv_tweets)
+        val linearLayoutManager = LinearLayoutManager(applicationContext)
+        rvTweets.layoutManager = linearLayoutManager
+        tweetsRvAdapter = TweetsRvAdapter(applicationContext, tweets)
+        rvTweets.adapter = tweetsRvAdapter
 
        /* var src = "https://pbs.twimg.com/profile_images/976382974961664001/zr1-ysp2_normal.jpg";
         Picasso.get()

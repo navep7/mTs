@@ -35,11 +35,11 @@
         android:layout_height="wrap_content"
         android:gravity="center"/>
 
-    <ListView
-        android:id="@+id/tweets_listview"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tweets"
         android:layout_below="@+id/imgv_pp"
-        android:layout_margin="@dimen/fab_margin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
