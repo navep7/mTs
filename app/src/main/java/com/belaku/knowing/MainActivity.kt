@@ -2,6 +2,7 @@ package com.belaku.knowing
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -10,13 +11,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +32,9 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+    private var isDarkModeOn: Boolean = false
+    private lateinit var sharedPreferencesEditor: SharedPreferences.Editor
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var tweetsRvAdapter: TweetsRvAdapter
     private lateinit var rvTweets: RecyclerView
 //    private lateinit var arrayAdapter: ArrayAdapter<String>
@@ -56,6 +59,7 @@ class MainActivity : AppCompatActivity() {
      //   setSupportActionBar(binding.toolbar)
 
         findViewByIds()
+        initOps()
 
         appContext = applicationContext
 
@@ -71,6 +75,30 @@ class MainActivity : AppCompatActivity() {
         })
 
 
+    }
+
+    private fun initOps() {
+
+        sharedPreferences = getSharedPreferences(
+            "sharedPrefs",
+            MODE_PRIVATE
+        )
+        sharedPreferencesEditor = sharedPreferences.edit()
+        isDarkModeOn = sharedPreferences.getBoolean(
+            "isDarkModeOn",
+            false
+        )
+
+        if (isDarkModeOn) {
+            AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_YES);
+         //   btnToggleDark.setText("Disable Dark Mode");
+        }
+        else {
+            AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_NO);
+         //   btnToggleDark.setText("Enable Dark Mode");
+        }
     }
 
     private fun getTweets(str: String) {
@@ -199,6 +227,29 @@ class MainActivity : AppCompatActivity() {
         fun makeToast(str: String) {
                 Log.d("Toasting", str)
                 Toast.makeText(appContext, str, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun DarkModeSwitch(view: View) {
+
+        if (isDarkModeOn) {
+            AppCompatDelegate
+                .setDefaultNightMode(
+                    AppCompatDelegate
+                        .MODE_NIGHT_NO
+                );
+
+            sharedPreferencesEditor.putBoolean("isDarkModeOn", false);
+            sharedPreferencesEditor.apply();
+        } else {
+            AppCompatDelegate
+                .setDefaultNightMode(
+                    AppCompatDelegate
+                        .MODE_NIGHT_YES
+                );
+
+            sharedPreferencesEditor.putBoolean("isDarkModeOn", true);
+            sharedPreferencesEditor.apply();
         }
     }
 
