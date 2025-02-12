@@ -36,7 +36,8 @@ class TweetsRvAdapter(var context: Context, tweets: ArrayList<String>) :
         }
 
 
-        holder.tweetView.text = Html.fromHtml(words.toString())
+
+        holder.tweetView.text = Html.fromHtml(words.toString().replace("[", "").replace("]", ""))
     }
 
     override fun getItemCount(): Int {
