@@ -1,5 +1,6 @@
 package com.belaku.knowing
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -55,6 +56,8 @@ class MainActivity : AppCompatActivity() {
      //   setSupportActionBar(binding.toolbar)
 
         findViewByIds()
+
+        appContext = applicationContext
 
         getTweets(editTextUname.text.toString())
 
@@ -124,7 +127,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun getProfile(str: String) {
 
-
         val retrofitBuilder = Retrofit.Builder()
             .baseUrl("https://twitter154.p.rapidapi.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -155,21 +157,10 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun makeToast(str: String) {
-        Log.d("Toasting", str)
-        Toast.makeText(applicationContext, str, Toast.LENGTH_LONG).show()
-
-    }
 
     private fun findViewByIds() {
         imageviewDp = findViewById(R.id.imgv_dp)
         imageviewTrail = findViewById(R.id.imgv_pp)
-
-       /* mListView = findViewById <ListView>(R.id.tweets_listview)
-        arrayAdapter = ArrayAdapter(
-            this@MainActivity,
-            android.R.layout.simple_list_item_1, tweets)
-        mListView.adapter = arrayAdapter*/
 
         rvTweets = findViewById(R.id.rv_tweets)
         val linearLayoutManager = LinearLayoutManager(applicationContext)
@@ -177,10 +168,6 @@ class MainActivity : AppCompatActivity() {
         tweetsRvAdapter = TweetsRvAdapter(applicationContext, tweets)
         rvTweets.adapter = tweetsRvAdapter
 
-       /* var src = "https://pbs.twimg.com/profile_images/976382974961664001/zr1-ysp2_normal.jpg";
-        Picasso.get()
-            .load(src)
-            .into(imageviewDp);*/
         editTextUname = findViewById(R.id.edtx_uname)
     }
 
@@ -204,6 +191,15 @@ class MainActivity : AppCompatActivity() {
         val tweetUrl = ("https://twitter.com/intent/tweet?text=")
         val uri = Uri.parse(tweetUrl)
         startActivity(Intent(Intent.ACTION_VIEW, uri))
+    }
+
+    companion object {
+        private lateinit var appContext: Context
+
+        fun makeToast(str: String) {
+                Log.d("Toasting", str)
+                Toast.makeText(appContext, str, Toast.LENGTH_LONG).show()
+        }
     }
 
 

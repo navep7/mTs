@@ -23,7 +23,20 @@ class TweetsRvAdapter(var context: Context, tweets: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tweetView.text = tweets[position]
+        var words: MutableList<String> = tweets.get(position).split(" ").toMutableList()
+        for(i in words.indices) {
+            if (words[i].startsWith("#")) {
+                words[i] = "<font color=\"blue\">" + words[i] + "</font>"
+            } else if (words[i].startsWith("@")) {
+                words[i] = "<font color=\"red\">" + words[i] + "</font>"
+            } else {
+                words[i] = words[i]
+            }
+              //  MainActivity.makeToast(words.get(i))
+        }
+
+
+        holder.tweetView.text = Html.fromHtml(words.toString())
     }
 
     override fun getItemCount(): Int {
